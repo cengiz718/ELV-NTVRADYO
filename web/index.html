@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090d16"><title>ELVİN TV RADYO</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+<style>
+:root{color-scheme:dark;--bg:#080c14;--panel:#111827;--panel2:#172235;--line:#26354b;--gold:#e8b85b;--muted:#91a0b6;--text:#f4f6fb}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#17243a 0,transparent 40%),var(--bg);color:var(--text);font:15px/1.45 Inter,system-ui,Segoe UI,Arial,sans-serif}
+header{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 4vw;background:#090e18eF;position:sticky;top:0;z-index:5;backdrop-filter:blur(14px)}
+.brand{display:flex;gap:12px;align-items:center;font-weight:900;letter-spacing:1.5px}.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#f3d38c,#a76b20);display:grid;place-items:center;color:#17120a;font-size:21px;box-shadow:0 5px 24px #d99c3d44}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:3px;font-weight:600}
+.status{font-size:12px;color:var(--muted)}.layout{max-width:1500px;margin:24px auto;padding:0 22px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px}
+.player-card,.side-card{background:linear-gradient(160deg,#141e2d,#0e1521);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 16px 50px #0005}
+.player-head{display:flex;align-items:center;justify-content:space-between;padding:17px 20px}.now{font-weight:750}.eyebrow{color:var(--gold);font-size:10px;letter-spacing:2px;font-weight:800}
+.screen{aspect-ratio:16/9;background:#03060b;display:grid;place-items:center;position:relative}video{width:100%;height:100%;object-fit:contain;background:#000}.screen-empty{text-align:center;padding:30px;color:var(--muted)}.screen-empty .big{font-size:52px;color:#33445c;margin-bottom:10px}
+.controls{display:flex;gap:10px;align-items:center;padding:15px 18px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#1a2638;color:var(--text);border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:650}.btn:hover{border-color:var(--gold);color:var(--gold)}.btn.primary{background:linear-gradient(135deg,#f1ce82,#b77b2b);border:0;color:#19140b}.btn:disabled{opacity:.45;cursor:not-allowed}
+.info{padding:0 20px 18px;color:var(--muted);font-size:12px}
+.side-card{padding:18px;height:max-content}.tabs{display:flex;background:#0a111d;padding:4px;border-radius:12px;gap:4px}.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:10px 6px;border-radius:9px;cursor:pointer;font-weight:700}.tab.active{background:#24344c;color:var(--gold)}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px;font-weight:800}.count{color:var(--muted);font-size:12px;font-weight:500}
+input[type=text],input[type=url]{width:100%;background:#0a111d;border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--text);outline:none;margin:5px 0}input:focus{border-color:var(--gold)}
+.channel-list{max-height:46vh;overflow:auto;margin-top:10px}.channel{display:flex;gap:10px;align-items:center;padding:11px;border:1px solid transparent;border-radius:11px;cursor:pointer}.channel:hover,.channel.selected{background:#1a2a40;border-color:#31445f}.channel .play{width:34px;height:34px;border-radius:9px;background:#25364d;display:grid;place-items:center;color:var(--gold);flex-shrink:0}.channel .meta{min-width:0;flex:1}.channel b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}.channel small{color:var(--muted);font-size:11px}.star{color:var(--gold);font-size:17px}
+.import{border-top:1px solid var(--line);margin-top:16px;padding-top:15px}.import-actions{display:flex;gap:8px}.import-actions .btn{flex:1}.file{display:none}.hint{color:var(--muted);font-size:11px;margin-top:9px}
+footer{text-align:center;color:#65748a;font-size:11px;padding:20px}
+@media(max-width:900px){.layout{grid-template-columns:1fr;margin:14px auto;padding:0 12px}.side-card{order:2}.channel-list{max-height:340px}header{padding:0 15px}.status{display:none}}
+</style></head>
+<body>
+<header><div class="brand"><div class="logo">▶</div><div>ELVİN TV RADYO<small>ONLINE PLAYER</small></div></div><div class="status" id="status">Oynatmaya hazır · Bilgisayar / Tablet / Telefon</div></header>
+<main class="layout">
+<section class="player-card">
+ <div class="player-head"><div><div class="eyebrow">ŞİMDİ OYNATILIYOR</div><div class="now" id="now">Bir yayın seçin</div></div><span class="count" id="kind">TV / RADYO</span></div>
+ <div class="screen" id="screen"><div class="screen-empty"><div class="big">▶</div><b>ELVİN TV RADYO</b><div>Yayın listenizi ekleyin ve izlemeye başlayın.</div></div><video id="video" controls playsinline></video></div>
+ <div class="controls"><button class="btn primary" id="playBtn">▶ OYNAT</button><button class="btn" id="stopBtn">■ DURDUR</button><button class="btn" id="fullBtn">⛶ TAM EKRAN</button><span class="count" id="playState">Henüz yayın seçilmedi</span></div>
+ <div class="info">Bu oynatıcı, kendi yayın listenizi veya izleme hakkınız bulunan M3U/M3U8 bağlantılarını kullanır. Bazı yayınlar sağlayıcının CORS veya erişim kısıtlamaları nedeniyle tarayıcıda açılmayabilir.</div>
+</section>
+<aside class="side-card">
+ <div class="tabs"><button class="tab active" data-tab="tv">▣ TV</button><button class="tab" data-tab="radio">♫ RADYO</button><button class="tab" data-tab="fav">★ FAVORİ</button></div>
+ <div class="section-title"><span>YAYIN LİSTESİ</span><span class="count" id="total">0 kanal</span></div>
+ <input id="search" type="text" placeholder="Kanal veya kategori ara...">
+ <div class="channel-list" id="channels"><div class="screen-empty">Henüz kanal yok.<br>Alttan M3U listenizi ekleyin.</div></div>
+ <div class="import"><div class="section-title" style="margin-top:0">LİSTE EKLE</div>
+ <input id="playlistUrl" type="url" placeholder="M3U / M3U8 liste bağlantısı">
+ <div class="import-actions"><button class="btn primary" id="loadUrl">URL YÜKLE</button><button class="btn" id="pickFile">DOSYA SEÇ</button></div>
+ <input class="file" id="fileInput" type="file" accept=".m3u,.m3u8,.txt">
+ <div class="hint">Liste bu tarayıcıda saklanır. URL kaynağı CORS izni vermiyorsa dosya olarak yüklemeyi deneyin.</div>
+ <div class="import-actions" style="margin-top:10px"><button class="btn" id="addStream">+ Tek yayın ekle</button><button class="btn" id="clearList">Listeyi temizle</button></div>
+ </div>
+</aside></main><footer>ELVİN TV RADYO · Tarayıcı tabanlı oynatıcı · Yayın içerikleri kullanıcı tarafından sağlanır.</footer>
+<script>
+(()=>{const $=id=>document.getElementById(id);const video=$('video');let items=[],tab='tv',current=null,hls=null;
+const saved=()=>{try{localStorage.setItem('elvin-playlist',JSON.stringify(items));}catch(e){}};
+const restore=()=>{try{items=JSON.parse(localStorage.getItem('elvin-playlist')||'[]')}catch(e){items=[]}};
+function parseM3U(text){const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/);let out=[],meta=null;for(const raw of lines){const line=raw.trim();if(!line)continue;if(line.startsWith('#EXTINF')){const name=(line.split(',').slice(1).join(',').trim()||'İsimsiz yayın');const group=(line.match(/group-title="([^"]*)"/i)||[])[1]||'Genel';const logo=(line.match(/tvg-logo="([^"]*)"/i)||[])[1]||'';const radio=/radio|music|audio|podcast/i.test(line+' '+group);meta={name,group,logo,type:radio?'radio':'tv'};}else if(!line.startsWith('#')){out.push({...meta||{name:line,group:'Genel',type:/\.mp3|\.aac|radio/i.test(line)?'radio':'tv'},url:line,fav:false});meta=null;}}return out;}
+function render(){const q=$('search').value.toLocaleLowerCase('tr');let list=items.filter(x=>tab==='fav'?x.fav:x.type===tab);list=list.filter(x=>(x.name+' '+x.group).toLocaleLowerCase('tr').includes(q));$('total').textContent=list.length+' yayın';$('channels').innerHTML=list.length?list.map((x)=>{const i=items.indexOf(x);return '<div class="channel '+(current===x.url?'selected':'')+'" data-i="'+i+'"><div class="play">'+(x.type==='radio'?'♫':'▶')+'</div><div class="meta"><b>'+esc(x.name)+'</b><small>'+esc(x.group||'Genel')+'</small></div><span class="star" data-fav="'+i+'">'+(x.fav?'★':'☆')+'</span></div>'}).join(''):'<div class="screen-empty">Bu bölümde yayın bulunamadı.</div>';}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function play(x){current=x.url;$('now').textContent=x.name;$('kind').textContent=x.type==='radio'?'RADYO':'TELEVİZYON';$('playState').textContent='Bağlanıyor…';$('status').textContent='Yayın yükleniyor';if(hls){hls.destroy();hls=null;}video.pause();video.removeAttribute('src');video.load();if(/\.m3u8($|\?)/i.test(x.url)&&window.Hls&&Hls.isSupported()){hls=new Hls({enableWorker:true});hls.loadSource(x.url);hls.attachMedia(video);hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));hls.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal){$('playState').textContent='Yayın açılamadı';$('status').textContent='Bağlantı veya yayın hatası';}});}else{video.src=x.url;video.play().catch(()=>{$('playState').textContent='Oynatmak için ▶ düğmesine basın';});}render();}
+$('channels').addEventListener('click',e=>{const f=e.target.closest('[data-fav]');if(f){const i=+f.dataset.fav;items[i].fav=!items[i].fav;saved();render();return;}const row=e.target.closest('[data-i]');if(row)play(items[+row.dataset.i]);});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));render();});
+$('search').oninput=render;
+$('loadUrl').onclick=async()=>{const url=$('playlistUrl').value.trim();if(!url)return alert('Önce M3U bağlantısı girin.');$('status').textContent='Liste indiriliyor…';try{const r=await fetch(url);if(!r.ok)throw Error('HTTP '+r.status);const t=await r.text();const parsed=parseM3U(t);if(!parsed.length)throw Error('Listede yayın bulunamadı.');items=parsed;saved();render();$('status').textContent=parsed.length+' yayın yüklendi';}catch(e){$('status').textContent='Liste yüklenemedi';alert('Liste alınamadı: '+e.message+'\nSunucu CORS engeli uyguluyor olabilir. M3U dosyasını bilgisayarınızdan seçin.');}};
+$('pickFile').onclick=()=>$('fileInput').click();$('fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;const parsed=parseM3U(await f.text());if(!parsed.length){alert('Dosyada yayın bulunamadı.');return;}items=parsed;saved();render();$('status').textContent=parsed.length+' yayın yüklendi';};
+$('addStream').onclick=()=>{const name=prompt('Yayın adı:');if(!name)return;const url=prompt('Yayın adresi (http/https):');if(!url||!/^https?:\/\//i.test(url))return alert('Geçerli bir http/https adresi girin.');items.push({name,url,group:'Eklenenler',type:/\.mp3|\.aac/i.test(url)?'radio':'tv',fav:false});saved();render();};
+$('clearList').onclick=()=>{if(confirm('Bu tarayıcıdaki yayın listesini silmek istiyor musunuz?')){items=[];saved();render();}};
+$('playBtn').onclick=()=>video.play().catch(()=>{});$('stopBtn').onclick=()=>{video.pause();video.currentTime=0;$('playState').textContent='Durduruldu';};$('fullBtn').onclick=()=>{const s=$('screen');if(s.requestFullscreen)s.requestFullscreen();else if(video.webkitEnterFullscreen)video.webkitEnterFullscreen();};
+video.addEventListener('playing',()=>{$('playState').textContent='Yayın oynatılıyor';$('status').textContent='Canlı yayın';});video.addEventListener('error',()=>{$('playState').textContent='Bu yayın tarayıcıda açılamadı';$('status').textContent='Oynatma hatası';});
+restore();render();
+})();
+</script></body></html>
